@@ -133,6 +133,7 @@ body{min-height:100vh;padding-bottom:84px}.app{max-width:1180px;margin:auto;padd
 .income-metric{position:relative;cursor:pointer}.income-metric:hover{background:#f4faf4}.income-edit-button{margin-top:9px;border:0;background:transparent;color:var(--green);font-weight:800;padding:0;cursor:pointer;font-size:13px}.income-total-preview{display:flex;justify-content:space-between;align-items:center;background:#f2f7f1;border-radius:12px;padding:15px;color:var(--green);font-weight:750}.income-total-preview strong{font-size:22px}.income-month-note{color:var(--muted);font-size:13px;line-height:1.4;margin:-4px 0 2px}
 /* V1.2.1 — Liste d’achats */
 .shopping-shortcut{cursor:pointer}.shopping-shortcut:active{transform:translateY(1px)}
+.summary-link{cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}.summary-link:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(31,61,44,.08)}.summary-link:active{transform:translateY(0)}.summary-link:focus-visible{outline:3px solid rgba(46,125,79,.22);outline-offset:2px}.cockpit-shopping-row .shopping-remove-mini{margin-left:auto;border:0;background:transparent;color:var(--muted);font-size:20px;line-height:1;padding:4px 7px;cursor:pointer;border-radius:8px}.cockpit-shopping-row .shopping-remove-mini:hover{background:#f5f5f5;color:#b33}
 .shopping-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.shopping-summary .kpi-card{text-align:center}.shopping-list{display:grid;gap:10px}.shopping-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:14px;background:#fff}.shopping-check{width:26px;height:26px;accent-color:var(--green)}.shopping-main{min-width:0}.shopping-main b{display:block;font-size:16px}.shopping-main small{display:block;color:var(--muted);margin-top:4px}.shopping-item.bought{background:#f5f8f5}.shopping-item.bought .shopping-main b{text-decoration:line-through;color:var(--muted)}.shopping-side{text-align:right}.shopping-price{font-weight:850;color:var(--green);white-space:nowrap}.shopping-actions{display:flex;gap:7px;justify-content:flex-end;margin-top:8px}.shopping-empty{text-align:center;color:var(--muted);padding:30px 10px}.shopping-total-box{margin-top:14px;background:#f2f7f1;border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;color:var(--green);font-weight:750}.shopping-total-box strong{font-size:22px}@media(max-width:650px){.shopping-summary{grid-template-columns:1fr}.shopping-item{grid-template-columns:auto 1fr}.shopping-side{grid-column:2;text-align:left}.shopping-actions{justify-content:flex-start;flex-wrap:wrap}}
 
 </style>
@@ -162,10 +163,10 @@ body{min-height:100vh;padding-bottom:84px}.app{max-width:1180px;margin:auto;padd
  <div class="summary-top"><h2>Résumé du mois</h2><div class="month"><svg class="cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><div class="month-selector"><button type="button" onclick="changeMonth(-1)">‹</button><select id="monthSelect" onchange="setSelectedMonth(this.value)"></select><button type="button" onclick="changeMonth(1)">›</button></div></div><div class="view-toggle"><button class="active">☷</button><button>☷</button><button>▦</button></div></div>
  <div class="summary-grid">
   <div class="metric green income-metric" role="button" tabindex="0" onclick="openIncomeModal()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIncomeModal()}"><div class="metric-label">Revenus réels</div><div class="metric-value" id="income">0 €</div><button class="income-edit-button" type="button" onclick="event.stopPropagation();openIncomeModal()">Modifier</button></div>
-  <div class="metric"><div class="metric-label">Charges fixes</div><div class="metric-value">2 104,65 €</div></div>
-  <div class="metric orange"><div class="metric-label">Dépenses variables</div><div class="metric-value" id="variableTotal">485 €</div></div>
-  <div class="metric blue"><div class="metric-label">Épargne & objectifs</div><div class="metric-value">400 €</div></div>
-  <div class="metric green"><div class="metric-label">Reste disponible</div><div class="metric-value" id="remaining">990,35 €</div></div>
+  <div class="metric summary-link" role="button" tabindex="0" onclick="showPage('budget')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('budget')}" title="Voir et modifier les charges fixes"><div class="metric-label">Charges fixes</div><div class="metric-value" id="fixedTotal">0 €</div></div>
+  <div class="metric orange summary-link" role="button" tabindex="0" onclick="showPage('mouvements')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('mouvements')}" title="Voir les dépenses du mois"><div class="metric-label">Dépenses variables</div><div class="metric-value" id="variableTotal">0 €</div></div>
+  <div class="metric blue summary-link" role="button" tabindex="0" onclick="showPage('mouvements')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('mouvements')}" title="Voir les versements d’épargne"><div class="metric-label">Épargne & objectifs</div><div class="metric-value" id="savingsTotal">0 €</div></div>
+  <div class="metric green summary-link" role="button" tabindex="0" onclick="showPage('mouvements')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('mouvements')}" title="Voir le détail du mois"><div class="metric-label">Reste disponible</div><div class="metric-value" id="remaining">0 €</div></div>
  </div>
 </section>
 
@@ -723,7 +724,7 @@ function openToolsModal(){document.getElementById('toolsModal').classList.add('o
 function closeToolsModal(){document.getElementById('toolsModal').classList.remove('open')}
 function downloadText(filename,text,type){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function backupData(){
- const data={app:'Mon Cockpit',version:'1.2.3',exportedAt:new Date().toISOString(),localStorage:{}};
+ const data={app:'Mon Cockpit',version:'1.2.4',exportedAt:new Date().toISOString(),localStorage:{}};
  for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('mc-'))data.localStorage[key]=localStorage.getItem(key)}
  downloadText(`mon-cockpit-sauvegarde-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(data,null,2),'application/json;charset=utf-8');showToast('Sauvegarde téléchargée ✓');
 }
@@ -754,12 +755,8 @@ function updateMonthlySummary(){
  const savings=current.filter(m=>m.type==="Épargne").reduce((s,m)=>s+Number(m.amount||0),0);
  const fixed=fixedBudgetItems.reduce((s,x)=>s+Number(x.amount||0),0);
  const remaining=income-fixed-variable-savings;
- document.getElementById("income").textContent=fmt(income);
- document.getElementById("variableTotal").textContent=fmt(variable);
- document.getElementById("remaining").textContent=fmt(remaining);
- const metrics=document.querySelectorAll("#page-cockpit .summary-grid .metric-value");
- if(metrics[1])metrics[1].textContent=fmt(fixed);
- if(metrics[3])metrics[3].textContent=fmt(savings);
+ const values={income,fixedTotal:fixed,variableTotal:variable,savingsTotal:savings,remaining};
+ Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=fmt(value)});
 }
 function showPage(name,button){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
@@ -934,10 +931,9 @@ renderChallenge();
 function openShoppingPage(){
  closeToolsModal();
  showPage('achats');
- setTimeout(()=>{
-  const page=document.getElementById('page-achats');
-  if(page) page.scrollIntoView({block:'start'});
- },50);
+ renderShoppingList();
+ const page=document.getElementById('page-achats');
+ if(page){window.scrollTo({top:0,behavior:'smooth'});page.focus?.()}
 }
 
 // V1.2.1 — Liste d’achats
@@ -965,6 +961,7 @@ function saveShoppingItem(e){
 }
 function toggleShoppingItem(index){shoppingItems[index].bought=!shoppingItems[index].bought;saveShoppingStorage();renderShoppingList()}
 function deleteShoppingItem(index){if(!confirm('Supprimer cet achat de la liste ?'))return;shoppingItems.splice(index,1);saveShoppingStorage();renderShoppingList()}
+function removeShoppingItemDirect(index){shoppingItems.splice(index,1);saveShoppingStorage();renderShoppingList();showToast('Achat retiré de la liste ✓')}
 function clearBoughtShoppingItems(){const count=shoppingItems.filter(x=>x.bought).length;if(!count){showToast('Aucun achat coché.');return}if(!confirm(`Retirer ${count} achat${count>1?'s':''} coché${count>1?'s':''} ?`))return;shoppingItems=shoppingItems.filter(x=>!x.bought);saveShoppingStorage();renderShoppingList()}
 function shoppingToExpense(index){
  const item=shoppingItems[index];
@@ -978,8 +975,8 @@ function shoppingToExpense(index){
 }
 function renderCockpitShoppingList(){
  const el=document.getElementById('cockpitShoppingList');if(!el)return;
- const visible=shoppingItems.slice(0,5);
- el.innerHTML=visible.length?visible.map((item,index)=>`<label class="cockpit-shopping-row ${item.bought?'done':''}"><input type="checkbox" ${item.bought?'checked':''} onchange="toggleShoppingItem(${index})"><span>${item.name}</span></label>`).join(''):'<div class="cockpit-shopping-empty">Aucun achat à prévoir pour le moment.</div>';
+ const visible=shoppingItems.map((item,index)=>({item,index})).filter(x=>!x.item.bought).slice(0,5);
+ el.innerHTML=visible.length?visible.map(({item,index})=>`<div class="cockpit-shopping-row"><input type="checkbox" onchange="toggleShoppingItem(${index})" aria-label="Marquer ${item.name} comme acheté"><span>${item.name}</span><button class="shopping-remove-mini" type="button" onclick="removeShoppingItemDirect(${index})" aria-label="Retirer ${item.name}">×</button></div>`).join(''):'<div class="cockpit-shopping-empty">Aucun achat à prévoir pour le moment.</div>';
 }
 function renderShoppingList(){
  const list=document.getElementById('shoppingList');if(!list)return;

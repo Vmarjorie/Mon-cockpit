@@ -10,3 +10,10 @@ Version prête pour GitHub Pages.
 4. Le site sera disponible à l'adresse : `https://vmarjorie.github.io/Mon-cockpit/`
 
 Pour l'installer sur iPhone : ouvrir le site dans Safari, toucher **Partager**, puis **Ajouter à l'écran d'accueil**.
+
+
+## Version 1.2.4
+- Résumé mensuel entièrement relié aux données.
+- Encarts cliquables vers les écrans de détail.
+- Les achats cochés disparaissent du cockpit et peuvent être retirés.
+- Bouton « Voir tout » renforcé.

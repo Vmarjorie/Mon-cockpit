@@ -1,4 +1,4 @@
-const CACHE='mon-cockpit-v1-2-3-revenus';
+const CACHE='mon-cockpit-v1-2-4-liens-achats';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
   self.skipWaiting();
