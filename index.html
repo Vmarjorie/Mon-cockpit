@@ -129,6 +129,8 @@ body{min-height:100vh;padding-bottom:84px}.app{max-width:1180px;margin:auto;padd
 
 /* Liste d’achats compacte du cockpit */
 .cockpit-shopping-list{display:grid;gap:4px;margin-top:4px}.cockpit-shopping-row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line)}.cockpit-shopping-row:last-child{border-bottom:0}.cockpit-shopping-row input{width:22px;height:22px;accent-color:var(--green);flex:0 0 auto}.cockpit-shopping-row span{font-size:16px}.cockpit-shopping-row.done span{text-decoration:line-through;color:var(--muted)}.cockpit-shopping-empty{color:var(--muted);padding:18px 0}.shopping-add-simple{width:100%;margin-top:14px;border:0;border-radius:12px;background:#f2f7f1;color:var(--green);font-weight:750;padding:14px;cursor:pointer}
+/* V1.2.3 — Revenus mensuels modifiables */
+.income-metric{position:relative;cursor:pointer}.income-metric:hover{background:#f4faf4}.income-edit-button{margin-top:9px;border:0;background:transparent;color:var(--green);font-weight:800;padding:0;cursor:pointer;font-size:13px}.income-total-preview{display:flex;justify-content:space-between;align-items:center;background:#f2f7f1;border-radius:12px;padding:15px;color:var(--green);font-weight:750}.income-total-preview strong{font-size:22px}.income-month-note{color:var(--muted);font-size:13px;line-height:1.4;margin:-4px 0 2px}
 /* V1.2.1 — Liste d’achats */
 .shopping-shortcut{cursor:pointer}.shopping-shortcut:active{transform:translateY(1px)}
 .shopping-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.shopping-summary .kpi-card{text-align:center}.shopping-list{display:grid;gap:10px}.shopping-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:14px;background:#fff}.shopping-check{width:26px;height:26px;accent-color:var(--green)}.shopping-main{min-width:0}.shopping-main b{display:block;font-size:16px}.shopping-main small{display:block;color:var(--muted);margin-top:4px}.shopping-item.bought{background:#f5f8f5}.shopping-item.bought .shopping-main b{text-decoration:line-through;color:var(--muted)}.shopping-side{text-align:right}.shopping-price{font-weight:850;color:var(--green);white-space:nowrap}.shopping-actions{display:flex;gap:7px;justify-content:flex-end;margin-top:8px}.shopping-empty{text-align:center;color:var(--muted);padding:30px 10px}.shopping-total-box{margin-top:14px;background:#f2f7f1;border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;color:var(--green);font-weight:750}.shopping-total-box strong{font-size:22px}@media(max-width:650px){.shopping-summary{grid-template-columns:1fr}.shopping-item{grid-template-columns:auto 1fr}.shopping-side{grid-column:2;text-align:left}.shopping-actions{justify-content:flex-start;flex-wrap:wrap}}
@@ -159,7 +161,7 @@ body{min-height:100vh;padding-bottom:84px}.app{max-width:1180px;margin:auto;padd
 <section class="card summary">
  <div class="summary-top"><h2>Résumé du mois</h2><div class="month"><svg class="cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><div class="month-selector"><button type="button" onclick="changeMonth(-1)">‹</button><select id="monthSelect" onchange="setSelectedMonth(this.value)"></select><button type="button" onclick="changeMonth(1)">›</button></div></div><div class="view-toggle"><button class="active">☷</button><button>☷</button><button>▦</button></div></div>
  <div class="summary-grid">
-  <div class="metric green"><div class="metric-label">Revenus réels</div><div class="metric-value" id="income">3 980 €</div></div>
+  <div class="metric green income-metric" role="button" tabindex="0" onclick="openIncomeModal()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIncomeModal()}"><div class="metric-label">Revenus réels</div><div class="metric-value" id="income">0 €</div><button class="income-edit-button" type="button" onclick="event.stopPropagation();openIncomeModal()">Modifier</button></div>
   <div class="metric"><div class="metric-label">Charges fixes</div><div class="metric-value">2 104,65 €</div></div>
   <div class="metric orange"><div class="metric-label">Dépenses variables</div><div class="metric-value" id="variableTotal">485 €</div></div>
   <div class="metric blue"><div class="metric-label">Épargne & objectifs</div><div class="metric-value">400 €</div></div>
@@ -265,6 +267,14 @@ body{min-height:100vh;padding-bottom:84px}.app{max-width:1180px;margin:auto;padd
 <div class="actions"><button type="button" class="btn secondary" onclick="closeModal()">Annuler</button><button class="btn primary quick-save" id="movementSaveButton">Enregistrer</button></div>
 </form></div></div>
 
+
+<div class="modal" id="incomeModal" onclick="if(event.target===this)closeIncomeModal()"><div class="sheet"><h2>Modifier les revenus</h2><p class="income-month-note" id="incomeMonthLabel"></p><form class="form" onsubmit="saveMonthlyIncome(event)">
+<div class="field"><label>Salaire du mois (€)</label><input id="monthlySalary" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div>
+<div class="field"><label>Loyer reçu (€)</label><input id="monthlyRent" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div>
+<div class="field"><label>Pension reçue (€)</label><input id="monthlyPension" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div>
+<div class="income-total-preview"><span>Total des revenus réels</span><strong id="incomePreview">0 €</strong></div>
+<div class="actions"><button type="button" class="btn secondary" onclick="closeIncomeModal()">Annuler</button><button class="btn primary">Enregistrer</button></div>
+</form></div></div>
 
 <div class="modal" id="shoppingModal" onclick="if(event.target===this)closeShoppingModal()"><div class="sheet"><h2 id="shoppingModalTitle">Ajouter un achat</h2><form class="form" onsubmit="saveShoppingItem(event)">
 <input type="hidden" id="shoppingEditIndex">
@@ -557,7 +567,7 @@ function renderMovementHistory(){
    const [sign,cls]=movementSignClass(m.type);
    return `<div class="movement-row"><span class="mini-icon soft-${m.col}">${simpleIcons[m.icon]||simpleIcons.cart}</span><div class="movement-main"><b>${m.category}</b><small>${m.type}</small></div><div class="movement-amount ${cls}">${sign} ${fmt(m.amount)}</div><div class="movement-actions"><button class="small-btn" onclick="editMovement(${index})">Modifier</button><button class="small-btn danger" onclick="deleteMovement(${index})">Supprimer</button></div></div>`;
  }).join(''):'<div class="empty-state">Aucun mouvement pour ce mois.</div>';
- const income=monthMovements().filter(m=>m.type==='Revenu').reduce((s,m)=>s+Number(m.amount||0),0);
+ const income=incomeForMonth(selectedMonth);
  const variable=monthMovements().filter(m=>m.type==='Dépense variable').reduce((s,m)=>s+Number(m.amount||0),0);
  const unexpected=monthMovements().filter(m=>m.type==='Imprévu').reduce((s,m)=>s+Number(m.amount||0),0);
  const saving=monthMovements().filter(m=>m.type==='Épargne').reduce((s,m)=>s+Number(m.amount||0),0);
@@ -661,6 +671,37 @@ function saveChallenge(e){
 }
 
 
+let monthlyIncomes=JSON.parse(localStorage.getItem('mc-monthly-incomes')||'{}');
+function legacyIncomeForMonth(month){return movements.filter(m=>m.month===month&&m.type==='Revenu').reduce((s,m)=>s+Number(m.amount||0),0)}
+function incomeRecord(month){
+ const saved=monthlyIncomes[month];
+ if(saved)return {salary:Number(saved.salary||0),rent:Number(saved.rent||0),pension:Number(saved.pension||0)};
+ const legacy=legacyIncomeForMonth(month);
+ return {salary:legacy,rent:0,pension:0};
+}
+function incomeForMonth(month){const r=incomeRecord(month);return r.salary+r.rent+r.pension}
+function updateIncomePreview(){
+ const total=['monthlySalary','monthlyRent','monthlyPension'].reduce((sum,id)=>sum+Number(document.getElementById(id)?.value||0),0);
+ const el=document.getElementById('incomePreview');if(el)el.textContent=fmt(total);
+}
+function openIncomeModal(){
+ const r=incomeRecord(selectedMonth);
+ document.getElementById('incomeMonthLabel').textContent='Revenus de '+monthText(selectedMonth).toLowerCase();
+ document.getElementById('monthlySalary').value=r.salary||'';
+ document.getElementById('monthlyRent').value=r.rent||'';
+ document.getElementById('monthlyPension').value=r.pension||'';
+ ['monthlySalary','monthlyRent','monthlyPension'].forEach(id=>{const el=document.getElementById(id);el.oninput=updateIncomePreview});
+ updateIncomePreview();document.getElementById('incomeModal').classList.add('open');
+}
+function closeIncomeModal(){document.getElementById('incomeModal').classList.remove('open')}
+function saveMonthlyIncome(e){
+ e.preventDefault();
+ monthlyIncomes[selectedMonth]={salary:Number(document.getElementById('monthlySalary').value||0),rent:Number(document.getElementById('monthlyRent').value||0),pension:Number(document.getElementById('monthlyPension').value||0)};
+ localStorage.setItem('mc-monthly-incomes',JSON.stringify(monthlyIncomes));
+ updateMonthlySummary();renderMovementHistory();renderStatistics();renderCockpitKpis();closeIncomeModal();showToast('Revenus enregistrés ✓');
+}
+
+
 const availableMonths=[];
 for(let y=2025;y<=2028;y++){for(let m=1;m<=12;m++){availableMonths.push(`${y}-${String(m).padStart(2,"0")}`)}}
 let selectedMonth=localStorage.getItem("mc-selected-month")||"2026-07";
@@ -682,7 +723,7 @@ function openToolsModal(){document.getElementById('toolsModal').classList.add('o
 function closeToolsModal(){document.getElementById('toolsModal').classList.remove('open')}
 function downloadText(filename,text,type){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function backupData(){
- const data={app:'Mon Cockpit',version:'1.1',exportedAt:new Date().toISOString(),localStorage:{}};
+ const data={app:'Mon Cockpit',version:'1.2.3',exportedAt:new Date().toISOString(),localStorage:{}};
  for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith('mc-'))data.localStorage[key]=localStorage.getItem(key)}
  downloadText(`mon-cockpit-sauvegarde-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(data,null,2),'application/json;charset=utf-8');showToast('Sauvegarde téléchargée ✓');
 }
@@ -708,7 +749,7 @@ fillMonthSelectors();
 function changeMonth(direction){let i=availableMonths.indexOf(selectedMonth);i=Math.max(0,Math.min(availableMonths.length-1,i+direction));setSelectedMonth(availableMonths[i])}
 function updateMonthlySummary(){
  const current=monthMovements();
- const income=current.filter(m=>m.type==="Revenu").reduce((s,m)=>s+Number(m.amount||0),0);
+ const income=incomeForMonth(selectedMonth);
  const variable=current.filter(m=>m.type==="Dépense variable"||m.type==="Imprévu").reduce((s,m)=>s+Number(m.amount||0),0);
  const savings=current.filter(m=>m.type==="Épargne").reduce((s,m)=>s+Number(m.amount||0),0);
  const fixed=fixedBudgetItems.reduce((s,x)=>s+Number(x.amount||0),0);
@@ -808,7 +849,7 @@ function previousMonth(value){return monthFromIndex(monthIndexValue(value)-1)}
 function lastMonths(count=12){const end=monthIndexValue(selectedMonth);return Array.from({length:count},(_,i)=>monthFromIndex(end-count+1+i))}
 function movementTotals(month){
  const list=movements.filter(m=>m.month===month);
- const income=list.filter(m=>m.type==='Revenu').reduce((s,m)=>s+Number(m.amount||0),0);
+ const income=incomeForMonth(month);
  const expenses=list.filter(m=>m.type==='Dépense variable'||m.type==='Imprévu').reduce((s,m)=>s+Number(m.amount||0),0);
  const savings=list.filter(m=>m.type==='Épargne').reduce((s,m)=>s+Number(m.amount||0),0);
  const fixed=fixedBudgetItems.reduce((s,x)=>s+Number(x.amount||0),0);
